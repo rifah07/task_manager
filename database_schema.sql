@@ -40,4 +40,20 @@ Create Table tasks (
     INDEX idx_created_by (created_by),
     INDEX idx_due_date (due_date)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;;
-  
+
+-- Activity Log Table (Audit Trail) --
+CREATE TABLE activity_logs(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    task_id INT,
+    action VARCHAR(100) NOT NULL,
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+
+    INDEX idx_user_id (user_id),
+    INDEX idx_task_id (task_id),
+    INDEX idx_created_at (created_at)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
