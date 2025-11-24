@@ -8,7 +8,7 @@ Create Table users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('adimin', 'user') DEFAULT 'user',
+    role ENUM('admin', 'user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -57,3 +57,39 @@ CREATE TABLE activity_logs(
     INDEX idx_task_id (task_id),
     INDEX idx_created_at (created_at)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Views for common queries (Performance optimization) --
+CREATE VIEW task_view AS
+SELECT
+    t.id,
+    t.title,
+    t.description,
+    t.status,
+    t.priority,
+    t.due_date,
+    u1.username AS created_by_name,
+    u2.username AS assigned_to_name,
+    t.created_at,
+    t.updated_at
+FROM tasks t
+LEFT JOIN users u1 ON t.created_by = u1.id
+LEFT JOIN users u2 ON t.assigned_to = u2.id;
+
+-- Stored Procedure --
+DELIMITER //
+CREATE PROCEDURE GetUserTaskStats(IN userId INT)
+BEGIN
+    SELECT
+        status,
+        COUNT(*) AS count
+    FROM tasks
+    WHERE assigned_to = userId
+    GROUP BY status;
+END //
+DELIMITER ;
+
+-- Sample Data Insertion --
+INSERT INTO users (username, email, password, role) VALUES
+('elsa','elsa@example.com','$2b$10$examplehash1', 'admin'),
+('john_doe', 'john@example.com', '$2b$10$examplehash2', 'user'),
+('anna', 'anna@example.com', '$2b$10$examplehash2', 'user');
