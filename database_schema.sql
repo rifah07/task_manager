@@ -93,3 +93,28 @@ INSERT INTO users (username, email, password, role) VALUES
 ('elsa','elsa@example.com','$2b$10$examplehash1', 'admin'),
 ('john_doe', 'john@example.com', '$2b$10$examplehash2', 'user'),
 ('anna', 'anna@example.com', '$2b$10$examplehash2', 'user');
+
+-- Useful MySQL Queries to Remember:
+
+-- 1. Join Query with Aggregation
+SELECT 
+    u.username,
+    COUNT(t.id) as total_tasks,
+    SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
+FROM users u
+LEFT JOIN tasks t ON u.id = t.assigned_to
+GROUP BY u.id, u.username;
+
+-- 2. Subquery Example
+SELECT * FROM tasks 
+WHERE created_by IN (
+    SELECT id FROM users WHERE role = 'admin'
+);
+
+-- 3. Date Functions
+SELECT * FROM tasks 
+WHERE due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);
+
+-- 4. Full-Text Search (if needed)
+-- ALTER TABLE tasks ADD FULLTEXT(title, description);
+-- SELECT * FROM tasks WHERE MATCH(title, description) AGAINST('keyword');
