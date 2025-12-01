@@ -12,4 +12,14 @@ class Database {
             queueLimit: 0
         });
     }
+
+    async query(sql, params) {
+    const [results] = await this.pool.execute(sql, params);
+    return results;
+    }
+
+    async getConnection(){
+        return await this.pool.getConnection();
+    }
 }
+module.exports = new Database();
