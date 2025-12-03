@@ -18,6 +18,17 @@ class User {
     async comparePassword(candidatePassword){
         return await bcrypt.compare(candidatePassword, this.password);
     }
+     
+    // Static method (Factory pattern)
+    static async findByEmail(email){
+        const results = await db.query('SELECT * FROM users WHERE email=?',[email]);
+        return results.length > 0 ? new User(results[0]) : null;
+    }
+     static async findById(id){
+        const results = await db.query('SELECT * FROM users WHERE id=?',[id]);
+        return results.length > 0 ? new User(results[0]) : null;
+    }
+
 }
 
 module.exports = User;
