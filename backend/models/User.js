@@ -39,6 +39,16 @@ class User {
         return this;
     }
 
+    // Method to get user without password (Abstraction)
+    toJSON(){
+        return {
+            id: this.id,
+            username: this.username,
+            email: this.email,
+            role: this.role
+        };
+    }
+
 }
 
 module.exports = User;
