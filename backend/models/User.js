@@ -21,12 +21,22 @@ class User {
      
     // Static method (Factory pattern)
     static async findByEmail(email){
-        const results = await db.query('SELECT * FROM users WHERE email=?',[email]);
+        const results = await db.query('SELECT * FROM users WHERE email = ?',[email]);
         return results.length > 0 ? new User(results[0]) : null;
     }
      static async findById(id){
-        const results = await db.query('SELECT * FROM users WHERE id=?',[id]);
+        const results = await db.query('SELECT * FROM users WHERE id = ?',[id]);
         return results.length > 0 ? new User(results[0]) : null;
+    }
+
+    async save(){
+        await this.hashPassword();
+        const result = await db.query(
+            'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+            [this.username, this.email, this.password, this.role]
+        );
+        this.id = result.insertId;
+        return this;
     }
 
 }
