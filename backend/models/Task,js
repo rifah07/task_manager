@@ -8,6 +8,36 @@ class BaseModel {
     async findAll(){
         return await db.query(`SELECT * FROM ${this.tableName}`);
     }
+
+    async findById(id){
+        const results = await db.query(
+            `SELECT * FROM ${this.tableName} WHERE id = ?`,
+            [id]
+        );
+        return results[0];
+    }
+
+    async deleteById(id){
+        return await db.query(
+            `DELETE FROM ${this.tableName} WHERE id = ?`,
+            [id]
+        );
+    }
 }
 
-// module.exports = ;
+class Task extends BaseModel {
+    constructor(data = {}){
+        super('tasks'); // Call the parent constructor
+        this.id = data.id;
+        this.title = data.title;
+        this.description = data.description;
+        this.status = data.status || 'pending';
+        this.priority = data.priority || 'medium';
+        this.created_by = data.created_by;
+        this.assigned_to = data.assigned_to;
+        this.due_date = data.due_date;
+  } 
+
+}
+
+module.exports = Task ;
