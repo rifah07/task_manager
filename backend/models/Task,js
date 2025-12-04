@@ -1,0 +1,13 @@
+const db = require('../config/database');
+
+class BaseModel {
+    constructor(tableName){
+        this.tableName = tableName;
+    }
+
+    async findAll(){
+        return await db.query(`SELECT * FROM ${this.tableName}`);
+    }
+}
+
+// module.exports = ;
