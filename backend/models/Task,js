@@ -38,6 +38,14 @@ class Task extends BaseModel {
         this.due_date = data.due_date;
   } 
 
+  async save(){
+    const result = await db.query(
+        'INSERT INTO tasks (title, description, status, priority, created_by, assigned_to, due_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [this.title, this.description, this.status, this.priority, this.created_by, this.assigned_to, this.due_date]
+    );
+    this.id = result.insertId;
+    return this;
+  }
 }
 
 module.exports = Task ;
