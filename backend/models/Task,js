@@ -46,6 +46,13 @@ class Task extends BaseModel {
     this.id = result.insertId;
     return this;
   }
+
+  async update(){
+    return await db.query(
+        'UPDATE tasks SET title = ?, description = ?, status = ?, priority = ?, created_by = ?, assigned_to = ?, due_date = ? WHERE id = ?',
+        [this.title, this.description, this.status, this.priority, this.created_by, this.assigned_to, this.due_date, this.id]
+    );
+  }
 }
 
 module.exports = Task ;
