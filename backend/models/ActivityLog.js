@@ -7,6 +7,12 @@ class ActivityLog {
             [userId, taskId, action, details]
         );
     }
+    static async getByTaskId(taskId){
+        return await db.query(
+            'SELECT al.*, u.username FROM activity_logs al JOIN users u ON al.userId = u.id WHERE task_id = ? ORDER BY created_at DESC',
+            [taskId]
+        );
+    }
 }
 
 module.exports = ActivityLog;
