@@ -29,6 +29,31 @@ class AuthController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    static async login(req, res) {
+        try{
+            const {email, password} = req.body;
+
+            const user = await User.findByEmail(email);
+            if(!user || !(await user.comparePassword(password))){
+                return res.status(401).json({ error: 'Invalid email or password' });
+            }
+
+            await ActivityLog.create(user.id, 'USER_LOGGED_IN', 'User logged in');
+
+            const token = jwt.sign(
+                {id: user.id,
+                email: user.email,},
+                process.env.JWT_SECRET || 'secret-key',
+                {expiresIn: '24h'}
+            );
+
+            res.json({user: user.toJSON(), token});
+
+        }catch(error){
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = AuthController;
