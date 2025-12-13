@@ -18,7 +18,8 @@ class TaskController {
 
     static async getTasks(req, res) {
         try {
-
+            const tasks = await Task.findWithFilters(req.query);
+            res.json(tasks);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -26,6 +27,11 @@ class TaskController {
 
     static async getTaskById(req, res) {
         try {
+            const task = await Task.findUserById(req.params.id);
+            if (!task) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+            res.json(task)
 
         } catch (error) {
             res.status(500).json({ error: error.message });
