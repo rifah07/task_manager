@@ -4,10 +4,12 @@ const ActivityLog = require('../models/ActivityLog');
 class TaskController {
     static async createTask(req, res) {
         try {
-            const taskData = { ...req.body, created_by: req.user.id};
+            const taskData = { ...req.body, created_by: req.user.id };
             const task = new Task(taskData);
             await task.save();
-            
+
+            await ActivityLog.create(req.user.id, task.id, 'TASK_CREATED', `Task "${task.title}" created`)
+
             res.status(201).json(task)
         } catch (error) {
             res.status(500).json({ error: error.message });
