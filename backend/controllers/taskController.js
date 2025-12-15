@@ -58,7 +58,15 @@ class TaskController {
 
     static async deleteTask(req, res) {
         try {
+            const task = await Task.findById(req.params.id);
+            if (!task) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
 
+            await Task.prototype.deleteById(req.params.id);
+            await ActivityLog.create(req.user.id, null, 'TASK_DELETED', `Task "${task.title}" deleted`);
+
+            res.json({ message: 'Task deleted successfully' });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
