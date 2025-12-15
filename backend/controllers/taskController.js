@@ -74,7 +74,8 @@ class TaskController {
 
     static async getActivityLogs(req, res) {
         try {
-
+            const logs = await ActivityLog.getByTaskId(req.params.id);
+            res.json(logs);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
